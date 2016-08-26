@@ -1,0 +1,26 @@
+<?xml version="1.0" ?><xliff version="1.1">
+<file datatype="php" original="system/modules/xmlrpc/languages/en/tl_page.php" source-language="en">
+<body>
+    <trans-unit id="tl_settings.xmlrpc_legend">
+        <source>XMLRPC interface</source>
+        <target>XMLRPC Schnittstelle</target>
+    </trans-unit>
+    <trans-unit id="tl_settings.xmlrpc_name.0">
+        <source>Username</source>
+        <target>Nutzername</target>
+    </trans-unit>
+    <trans-unit id="tl_settings.xmlrpc_name.1">
+        <source>Username used for authenticate a request</source>
+        <target>Nutzername zur Authentifizierung einer Anfrage</target>
+    </trans-unit>
+    <trans-unit id="tl_settings.xmlrpc_password.0">
+        <source>Password</source>
+        <target>Passwort</target>
+    </trans-unit>
+    <trans-unit id="tl_settings.xmlrpc_password.1">
+        <source>Password used for authenticate a request</source>
+        <target>Passwort zur Authentifizierung einer Anfrage</target>
+    </trans-unit>
+</body>
+</file>
+</xliff>
