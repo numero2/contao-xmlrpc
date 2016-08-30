@@ -5,11 +5,11 @@
         <source>XMLRPC interface</source>
         <target>XMLRPC Schnittstelle</target>
     </trans-unit>
-    <trans-unit id="tl_settings.xmlrpc_name.0">
+    <trans-unit id="tl_settings.xmlrpc_username.0">
         <source>Username</source>
         <target>Nutzername</target>
     </trans-unit>
-    <trans-unit id="tl_settings.xmlrpc_name.1">
+    <trans-unit id="tl_settings.xmlrpc_username.1">
         <source>Username used for authenticate a request</source>
         <target>Nutzername zur Authentifizierung einer Anfrage</target>
     </trans-unit>

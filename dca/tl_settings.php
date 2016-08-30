@@ -20,7 +20,7 @@
 
 $GLOBALS['TL_DCA']['tl_settings']['palettes']['default'] = str_replace(
     ';{modules_legend'
-,   ';{xmlrpc_legend:hide},xmlrpc_name,xmlrpc_password;{modules_legend'
+,   ';{xmlrpc_legend:hide},xmlrpc_username,xmlrpc_password;{modules_legend'
 ,   $GLOBALS['TL_DCA']['tl_settings']['palettes']['default']
 );
 // echo "<pre>".print_r($GLOBALS['TL_DCA']['tl_settings'],1)."</pre>";
@@ -28,8 +28,8 @@ $GLOBALS['TL_DCA']['tl_settings']['palettes']['default'] = str_replace(
 
 
 /* FIELDS */
-$GLOBALS['TL_DCA']['tl_settings']['fields']['xmlrpc_name'] = array(
-    'label'       => &$GLOBALS['TL_LANG']['tl_settings']['xmlrpc_name']
+$GLOBALS['TL_DCA']['tl_settings']['fields']['xmlrpc_username'] = array(
+    'label'       => &$GLOBALS['TL_LANG']['tl_settings']['xmlrpc_username']
 ,   'inputType'   => 'text'
 ,   'eval'        => array('mandatory'=>false, 'tl_class'=>'w50', 'readonly'=> false)
 ,   'load_callback' => array(array('tl_xmlrpc_settings','loadRandomWhenEmpty'))
