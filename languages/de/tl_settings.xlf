@@ -2,8 +2,8 @@
 <file datatype="php" original="system/modules/xmlrpc/languages/en/tl_page.php" source-language="en">
 <body>
     <trans-unit id="tl_settings.xmlrpc_legend">
-        <source>XMLRPC interface</source>
-        <target>XMLRPC Schnittstelle</target>
+        <source>XML-RPC interface</source>
+        <target>XML-RPC Schnittstelle</target>
     </trans-unit>
     <trans-unit id="tl_settings.xmlrpc_username.0">
         <source>Username</source>

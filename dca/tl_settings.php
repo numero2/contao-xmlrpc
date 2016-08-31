@@ -5,7 +5,7 @@
  *
  * Copyright (c) 2005-2016 Leo Feyer
  *
- * @package   xmlrpc
+ * @package   Contao XML-RPC
  * @author    Benny Born <benny.born@numero2.de>
  * @author    Michael Bösherz <michael.boesherz@numero2.de>
  * @license   Commercial
@@ -13,18 +13,12 @@
  */
 
 
-/**
- * Table tl_settings
- */
 /* PALETTES */
-
 $GLOBALS['TL_DCA']['tl_settings']['palettes']['default'] = str_replace(
     ';{modules_legend'
 ,   ';{xmlrpc_legend:hide},xmlrpc_username,xmlrpc_password;{modules_legend'
 ,   $GLOBALS['TL_DCA']['tl_settings']['palettes']['default']
 );
-// echo "<pre>".print_r($GLOBALS['TL_DCA']['tl_settings'],1)."</pre>";
-// die();
 
 
 /* FIELDS */
@@ -44,15 +38,17 @@ $GLOBALS['TL_DCA']['tl_settings']['fields']['xmlrpc_password'] = array(
 
 class tl_xmlrpc_settings extends \Backend {
 
+
     /**
-     * Laden der Daten
+     * Setting random UUID for username and password
      * @param DataContainer
      */
     public function loadRandomWhenEmpty($value,DataContainer $dc){
 
-        if( empty($value) ){
+        if( empty($value) ) {
             $value = StringUtil::binToUuid(md5(rand().time.rand()));
         }
+
         return $value;
     }
 }

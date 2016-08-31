@@ -5,7 +5,7 @@
  *
  * Copyright (c) 2005-2016 Leo Feyer
  *
- * @package   xmlrpc
+ * @package   Contao XML-RPC
  * @author    Benny Born <benny.born@numero2.de>
  * @author    Michael Bösherz <michael.boesherz@numero2.de>
  * @license   Commercial
@@ -29,9 +29,8 @@ ClassLoader::addNamespaces(array
 ClassLoader::addClasses(array
 (
 	// Classes
-    'numero2\xmlrpc\xmlrpc'                     => 'system/modules/xmlrpc/classes/xmlrpc.php',
+    'numero2\xmlrpc\XMLRPC'                     => 'system/modules/xmlrpc/classes/XMLRPC.php',
     'numero2\xmlrpc\Procedures'                 => 'system/modules/xmlrpc/classes/Procedures.php',
-
 
     // Vendor
     'PhpXmlRpc\Client'                          => 'system/modules/xmlrpc/vendor/phpxmlrpc/src/Client.php',

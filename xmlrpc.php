@@ -5,11 +5,14 @@
  *
  * Copyright (c) 2005-2016 Leo Feyer
  *
- * @package   SonntagScout
+ * @package   Contao XML-RPC
+ * @author    Benny Born <benny.born@numero2.de>
  * @author    Michael Bösherz <michael.boesherz@numero2.de>
  * @license   Commercial
- * @copyright 2015 numero2 - Agentur für Internetdienstleistungen
+ * @copyright 2016 numero2 - Agentur für Internetdienstleistungen
  */
+
+
 
 // Set the script name
 define('TL_SCRIPT', 'import.php');
@@ -18,6 +21,7 @@ define('TL_SCRIPT', 'import.php');
 define('TL_MODE', 'FE');
 define('BYPASS_TOKEN_CHECK',true);
 require '../../../system/initialize.php';
+
 // Run the importer
-$controller = new \numero2\xmlrpc\xmlrpc;
+$controller = new \numero2\xmlrpc\XMLRPC;
 $controller->run();

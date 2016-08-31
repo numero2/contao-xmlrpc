@@ -5,7 +5,7 @@
  *
  * Copyright (c) 2005-2016 Leo Feyer
  *
- * @package   xmlrpc
+ * @package   Contao XML-RPC
  * @author    Benny Born <benny.born@numero2.de>
  * @author    Michael Bösherz <michael.boesherz@numero2.de>
  * @license   Commercial
