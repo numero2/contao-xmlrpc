@@ -74,26 +74,24 @@ class Procedures extends \System {
 
         xmlrpc::authenticateUser($params->getParam(0)->me['string'], $params->getParam(1)->me['string']);
 
+        $archives = NULL;
         $archives = \NewsArchiveModel::findAll();
+
+        $res = array();
         foreach ($archives as $key => $value) {
-            
-            echo "<pre>".print_r($value ->row(),1)."</pre>";
+
+            $entry = array(
+                isAdmin => new \PhpXmlRpc\Value(true, \PhpXmlRpc\Value::$xmlrpcBoolean)
+            ,   url => new \PhpXmlRpc\Value(\Environment::get('base'), \PhpXmlRpc\Value::$xmlrpcString)
+            ,   blogid => new \PhpXmlRpc\Value($archives->id, \PhpXmlRpc\Value::$xmlrpcString)
+            ,   blogName => new \PhpXmlRpc\Value($archives->title, \PhpXmlRpc\Value::$xmlrpcString)
+            ,   xmlrpc => new \PhpXmlRpc\Value(\Environment::get('base').\Environment::get('request'), \PhpXmlRpc\Value::$xmlrpcString)
+            );
+
+            $res[] = new \PhpXmlRpc\Value($entry, \PhpXmlRpc\Value::$xmlrpcStruct);
         }
-        die();
-/*      <?xml version="1.0" encoding="UTF-8"?>
-        <methodResponse>
-          <params><param><value><array>
-            <data><value><struct>
-              <member><name>isAdmin</name><value><boolean>1</boolean></value></member>
-              <member><name>url</name><value><string>http://example.com/path/to/</string></value></member>
-              <member><name>blogid</name><value><string>the-id</string></value></member>
-              <member><name>blogName</name><value><string>The name</string></value></member>
-              <member><name>xmlrpc</name><value><string>http://example.com/path/to/xmlrpc.php</string></value></member>
-            </struct></value></data>
-          </array></value></param></params>
-        </methodResponse>
-        */
-        return new \PhpXmlRpc\Response(new \PhpXmlRpc\Value("true", \PhpXmlRpc\Value::$xmlrpcString));
+
+        return new \PhpXmlRpc\Response(new \PhpXmlRpc\Value($res, \PhpXmlRpc\Value::$xmlrpcArray));
     }
 
 
@@ -103,8 +101,22 @@ class Procedures extends \System {
      * @param array $params
      */
     static public function getPost($params) {
-
-        xmlrpc::authenticateUser($params->getParam(0)[1]->me['string'], $params->getParam(0)[2]->me['string']);
+/* <?xml version="1.0" ?><methodCall>
+  <methodName>wp.getPost</methodName>
+  <params><param><value><array><data>
+    <value><i4>the-blog-id</i4></value>
+    <value><string>the-username</string></value>
+    <value><string>the-password</string></value>
+    <value><string>the-post-id</string></value>
+    <value><array><data>
+      <value><string>post</string></value>
+      <value><string>terms</string></value>
+      <value><string>custom_fields</string></value>
+    </data></array></value>
+  </data></array></value></param></params>
+</methodCall>
+*/
+        // xmlrpc::authenticateUser($params->getParam(0)[1]->me['string'], $params->getParam(0)[2]->me['string']);
 
 /*      <?xml version="1.0" encoding="UTF-8"?>
         <methodResponse>
