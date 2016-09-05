@@ -31,27 +31,27 @@ class Procedures extends \System {
         return array(
             "cto.getOptions" => array(
                 "function" => "Procedures::getOptions"
-            ,   "signature" => array(array(\PhpXmlRpc\Value::$xmlrpcString, \PhpXmlRpc\Value::$xmlrpcArray))
+            ,   "signature" => array(array("string", "array"))
             ,   "docstring" => "Used to perform a connection check"
             )
         ,   "cto.getUsersBlogs" => array(
                 "function" => "Procedures::getUsersBlogs"
-            ,   "signature" => array(array(\PhpXmlRpc\Value::$xmlrpcString, \PhpXmlRpc\Value::$xmlrpcString, \PhpXmlRpc\Value::$xmlrpcString))
+            ,   "signature" => array(array("string", "string", "string"))
             ,   "docstring" => "Queries which blogs can be reached over this integration."
             )
         ,   "cto.getPosts" => array(
                 "function" => "Procedures::getPosts"
-            ,   "signature" => array(array(\PhpXmlRpc\Value::$xmlrpcString, \PhpXmlRpc\Value::$xmlrpcArray))
+            ,   "signature" => array(array("string", "array"))
             ,   "docstring" => "Used to gather information about several posts."
             )
         ,   "cto.getPost" => array(
                 "function" => "Procedures::getPost"
-            ,   "signature" => array(array(\PhpXmlRpc\Value::$xmlrpcString, \PhpXmlRpc\Value::$xmlrpcArray))
+            ,   "signature" => array(array("string", "array"))
             ,   "docstring" => "Used to gather information about the post."
             )
         ,   "cto.newPost" => array(
                 "function" => "Procedures::newPost"
-            ,   "signature" => array(array(\PhpXmlRpc\Value::$xmlrpcString, \PhpXmlRpc\Value::$xmlrpcArray))
+            ,   "signature" => array(array("string", "array"))
             ,   "docstring" => "Used to create a new post."
             )
         );
@@ -69,7 +69,52 @@ class Procedures extends \System {
 
         XMLRPC::authenticateUser($params->getParam(0)[1]->me['string'], $params->getParam(0)[2]->me['string']);
 
-        return new \PhpXmlRpc\Response(new \PhpXmlRpc\Value("ok", \PhpXmlRpc\Value::$xmlrpcString));
+        \System::loadLanguageFile('tl_settings');
+
+        $result = array(
+            'software_name' => new \PhpXmlRpc\Value(array(
+                    'desc' => new \PhpXmlRpc\Value('Softwarename', "string")
+                ,   'readonly' => new \PhpXmlRpc\Value(true, "boolean")
+                ,   'value' => new \PhpXmlRpc\Value('Contao', "string")
+            ), "struct")
+        ,   'software_version' => new \PhpXmlRpc\Value(array(
+                    'desc' => new \PhpXmlRpc\Value('Softwareversion', "string")
+                ,   'readonly' => new \PhpXmlRpc\Value(true, "boolean")
+                ,   'value' => new \PhpXmlRpc\Value(VERSION.'.'.BUILD, "string")
+            ), "struct")
+        ,   'blog_url' => new \PhpXmlRpc\Value(array(
+                    'desc' => new \PhpXmlRpc\Value('WordPress-Adresse (URL)', "string")
+                ,   'readonly' => new \PhpXmlRpc\Value(true, "boolean")
+                ,   'value' => new \PhpXmlRpc\Value(\Environment::get('base'), "string")
+            ), "struct")
+        ,   'home_url' => new \PhpXmlRpc\Value(array(
+                    'desc' => new \PhpXmlRpc\Value('Website-Adresse (URL)', "string")
+                ,   'readonly' => new \PhpXmlRpc\Value(true, "boolean")
+                ,   'value' => new \PhpXmlRpc\Value(\Environment::get('base'), "string")
+            ), "struct")
+        ,   'admin_url' => new \PhpXmlRpc\Value(array(
+                    'desc' => new \PhpXmlRpc\Value('Die URL zum Adminbereich', "string")
+                ,   'readonly' => new \PhpXmlRpc\Value(true, "boolean")
+                ,   'value' => new \PhpXmlRpc\Value(\Environment::get('base')."contao/", "string")
+            ), "struct")
+        ,   'blog_title' => new \PhpXmlRpc\Value(array(
+                    'desc' => new \PhpXmlRpc\Value($GLOBALS['TL_LANG']['tl_settings']['websiteTitle'][0], "string")
+                ,   'readonly' => new \PhpXmlRpc\Value(true, "boolean")
+                ,   'value' => new \PhpXmlRpc\Value(\Config::get('websiteTitle'), "string")
+            ), "struct")
+        ,   'date_format' => new \PhpXmlRpc\Value(array(
+                    'desc' => new \PhpXmlRpc\Value($GLOBALS['TL_LANG']['tl_settings']['dateFormat'][0], "string")
+                ,   'readonly' => new \PhpXmlRpc\Value(true, "boolean")
+                ,   'value' => new \PhpXmlRpc\Value(\Config::get('dateFormat'), "string")
+            ), "struct")
+        ,   'time_format' => new \PhpXmlRpc\Value(array(
+                    'desc' => new \PhpXmlRpc\Value($GLOBALS['TL_LANG']['tl_settings']['timeFormat'][0], "string")
+                ,   'readonly' => new \PhpXmlRpc\Value(true, "boolean")
+                ,   'value' => new \PhpXmlRpc\Value(\Config::get('timeFormat'), "string")
+            ), "struct")
+        );
+
+        return new \PhpXmlRpc\Response(new \PhpXmlRpc\Value($result, "struct"));
     }
 
 
@@ -89,17 +134,17 @@ class Procedures extends \System {
         foreach( $archives as $key => $value ) {
 
             $entry = array(
-                'isAdmin' => new \PhpXmlRpc\Value(true, \PhpXmlRpc\Value::$xmlrpcBoolean)
-            ,   'url' => new \PhpXmlRpc\Value(\Environment::get('base'), \PhpXmlRpc\Value::$xmlrpcString)
-            ,   'blogid' => new \PhpXmlRpc\Value($archives->id, \PhpXmlRpc\Value::$xmlrpcString)
-            ,   'blogName' => new \PhpXmlRpc\Value($archives->title, \PhpXmlRpc\Value::$xmlrpcString)
-            ,   'xmlrpc' => new \PhpXmlRpc\Value(\Environment::get('base').\Environment::get('request'), \PhpXmlRpc\Value::$xmlrpcString)
+                'isAdmin' => new \PhpXmlRpc\Value(true, "boolean")
+            ,   'url' => new \PhpXmlRpc\Value(\Environment::get('base'), "string")
+            ,   'blogid' => new \PhpXmlRpc\Value($archives->id, "string")
+            ,   'blogName' => new \PhpXmlRpc\Value($archives->title, "string")
+            ,   'xmlrpc' => new \PhpXmlRpc\Value(\Environment::get('base').\Environment::get('request'), "string")
             );
 
-            $res[] = new \PhpXmlRpc\Value($entry, \PhpXmlRpc\Value::$xmlrpcStruct);
+            $res[] = new \PhpXmlRpc\Value($entry, "struct");
         }
 
-        return new \PhpXmlRpc\Response(new \PhpXmlRpc\Value($res, \PhpXmlRpc\Value::$xmlrpcArray));
+        return new \PhpXmlRpc\Response(new \PhpXmlRpc\Value($res, "array"));
     }
 
 
@@ -148,6 +193,7 @@ class Procedures extends \System {
                 n.start,
                 n.stop,
                 n.featured,
+                n.tstamp,
                 na.jumpTo,
                 c.text
             FROM tl_news AS n
@@ -174,26 +220,40 @@ class Procedures extends \System {
             }
 
             $entry = array(
-                    'post_id' => new \PhpXmlRpc\Value( $posts->id, \PhpXmlRpc\Value::$xmlrpcString)
-                ,   'blog_id' => new \PhpXmlRpc\Value( $blogID, \PhpXmlRpc\Value::$xmlrpcString)
-                ,   'link' => new \PhpXmlRpc\Value( $url, \PhpXmlRpc\Value::$xmlrpcString)
-                ,   'sticky' => new \PhpXmlRpc\Value( $posts->featured, \PhpXmlRpc\Value::$xmlrpcBoolean)
-                ,   'post_parent' => new \PhpXmlRpc\Value( $blogID, \PhpXmlRpc\Value::$xmlrpcString)
-                ,   'post_content' => new \PhpXmlRpc\Value( htmlentities($posts->text), \PhpXmlRpc\Value::$xmlrpcString)
-                ,   'post_title' => new \PhpXmlRpc\Value( $posts->headline, \PhpXmlRpc\Value::$xmlrpcString)
-                ,   'post_name' => new \PhpXmlRpc\Value( $posts->headline, \PhpXmlRpc\Value::$xmlrpcString)
-                ,   'post_status' => new \PhpXmlRpc\Value( $posts->published?"published":'draft', \PhpXmlRpc\Value::$xmlrpcString)
-                ,   'post_date' => new \PhpXmlRpc\Value( date("Ymd\Th:m:s",$posts->date), \PhpXmlRpc\Value::$xmlrpcDateTime)
-                ,   'terms' => new \PhpXmlRpc\Value( array(), \PhpXmlRpc\Value::$xmlrpcArray)
-                ,   'custom_fields' => new \PhpXmlRpc\Value( array(), \PhpXmlRpc\Value::$xmlrpcArray)
+                    'post_id' => new \PhpXmlRpc\Value( $posts->id, "string")
+                ,   'post_title' => new \PhpXmlRpc\Value( $posts->headline, "string")
+                ,   'post_date' => new \PhpXmlRpc\Value( date("Ymd\Th:m:s",$posts->date), "dateTime.iso8601")
+                ,   'post_date_gmt' => new \PhpXmlRpc\Value( date("Ymd\Th:m:s",$posts->date), "dateTime.iso8601") //////////////
+                ,   'post_modified' => new \PhpXmlRpc\Value( date("Ymd\Th:m:s",$posts->tstamp), "dateTime.iso8601")
+                ,   'post_modified_gmt' => new \PhpXmlRpc\Value( date("Ymd\Th:m:s",$posts->tstamp), "dateTime.iso8601") //////////////
+                ,   'post_status' => new \PhpXmlRpc\Value( $posts->published?"published":'draft', "string")
+                ,   'post_type' => new \PhpXmlRpc\Value( "post", "string")
+                ,   'post_name' => new \PhpXmlRpc\Value( $posts->headline, "string")
+                ,   'post_author' => new \PhpXmlRpc\Value( "", "string") ///////////////
+                ,   'post_password' => new \PhpXmlRpc\Value( "", "string") ///////////////
+                ,   'post_excerpt' => new \PhpXmlRpc\Value( "", "string") ///////////////
+                ,   'post_content' => new \PhpXmlRpc\Value( htmlentities($posts->text), "string")
+                ,   'post_parent' => new \PhpXmlRpc\Value( $blogID, "string")
+                ,   'post_mime_type' => new \PhpXmlRpc\Value( "", "string")
+                ,   'link' => new \PhpXmlRpc\Value( $url, "string")
+                ,   'guid' => new \PhpXmlRpc\Value( $url, "string") //////////////////
+                ,   'menu_order' => new \PhpXmlRpc\Value( "0", "int")
+                ,   'comment_status' => new \PhpXmlRpc\Value( "open", "string") //////////////////
+                ,   'ping_status' => new \PhpXmlRpc\Value( "open", "string") //////////////////
+                ,   'sticky' => new \PhpXmlRpc\Value( $posts->featured, "boolean")
+                ,   'post_thumbnail' => new \PhpXmlRpc\Value( "", "string") //////////////////
+                ,   'post_format' => new \PhpXmlRpc\Value( "standard", "string")
+                ,   'terms' => new \PhpXmlRpc\Value( array(), "array")
+                ,   'custom_fields' => new \PhpXmlRpc\Value( array(), "array")
+                //,   'blog_id' => new \PhpXmlRpc\Value( $blogID, "string")
             );
-            $res[] = new \PhpXmlRpc\Value($entry, \PhpXmlRpc\Value::$xmlrpcStruct);
+            $res[] = new \PhpXmlRpc\Value($entry, "struct");
             if( $posts->count() == 1 ){
                 break;
             }
         }
 
-        return new \PhpXmlRpc\Response(new \PhpXmlRpc\Value($res, \PhpXmlRpc\Value::$xmlrpcStruct));
+        return new \PhpXmlRpc\Response(new \PhpXmlRpc\Value($res, "array"));
     }
 
 
@@ -239,12 +299,12 @@ class Procedures extends \System {
         }
 
         $res = array(
-            'post_id' => new \PhpXmlRpc\Value( $postID, \PhpXmlRpc\Value::$xmlrpcString)
-        ,   'blog_id' => new \PhpXmlRpc\Value( $blogID, \PhpXmlRpc\Value::$xmlrpcString)
-        ,   'link' => new \PhpXmlRpc\Value( $url, \PhpXmlRpc\Value::$xmlrpcString)
+            'post_id' => new \PhpXmlRpc\Value( $postID, "string")
+        ,   'blog_id' => new \PhpXmlRpc\Value( $blogID, "string")
+        ,   'link' => new \PhpXmlRpc\Value( $url, "string")
         );
 
-        return new \PhpXmlRpc\Response(new \PhpXmlRpc\Value($res, \PhpXmlRpc\Value::$xmlrpcStruct));
+        return new \PhpXmlRpc\Response(new \PhpXmlRpc\Value($res, "struct"));
     }
 
 
@@ -301,6 +361,6 @@ class Procedures extends \System {
 
         $content->save();
 
-        return new \PhpXmlRpc\Response(new \PhpXmlRpc\Value($news->id, \PhpXmlRpc\Value::$xmlrpcString));
+        return new \PhpXmlRpc\Response(new \PhpXmlRpc\Value($news->id, "string"));
     }
 }
