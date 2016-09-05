@@ -115,6 +115,24 @@ class Procedures extends \System {
         $blogID = $params->getParam(0)[0]->me['i4'];
         $search = $params->getParam(0)[3]->me['struct'];
 
+        $blogs = \Database::getInstance()->prepare(
+            "SELECT id FROM tl_news_archive
+            "
+            )->execute();
+
+        $blogIDs = $blogs->fetchAllAssoc();
+
+        $blogFound = false;
+        foreach( $blogIDs as $key => $value ){
+            if( $value['id'] == $blogID ){
+                $blogFound = true;
+                break;
+            }
+        }
+        if( !$blogFound ){
+            $blogID = $blogIDs[0]['id'];
+        }
+
         $offset = $search['offset']->me['i4'];
         $rows = $search['number']->me['i4'];
         $posts = \Database::getInstance()->prepare(
@@ -129,6 +147,7 @@ class Procedures extends \System {
                 n.published,
                 n.start,
                 n.stop,
+                n.featured,
                 na.jumpTo,
                 c.text
             FROM tl_news AS n
@@ -158,6 +177,13 @@ class Procedures extends \System {
                     'post_id' => new \PhpXmlRpc\Value( $posts->id, \PhpXmlRpc\Value::$xmlrpcString)
                 ,   'blog_id' => new \PhpXmlRpc\Value( $blogID, \PhpXmlRpc\Value::$xmlrpcString)
                 ,   'link' => new \PhpXmlRpc\Value( $url, \PhpXmlRpc\Value::$xmlrpcString)
+                ,   'sticky' => new \PhpXmlRpc\Value( $posts->featured, \PhpXmlRpc\Value::$xmlrpcBoolean)
+                ,   'post_parent' => new \PhpXmlRpc\Value( $blogID, \PhpXmlRpc\Value::$xmlrpcString)
+                ,   'post_content' => new \PhpXmlRpc\Value( htmlentities($posts->text), \PhpXmlRpc\Value::$xmlrpcString)
+                ,   'post_title' => new \PhpXmlRpc\Value( $posts->headline, \PhpXmlRpc\Value::$xmlrpcString)
+                ,   'post_name' => new \PhpXmlRpc\Value( $posts->headline, \PhpXmlRpc\Value::$xmlrpcString)
+                ,   'post_status' => new \PhpXmlRpc\Value( $posts->published?"published":'draft', \PhpXmlRpc\Value::$xmlrpcString)
+                ,   'post_date' => new \PhpXmlRpc\Value( date("Ymd\Th:m:s",$posts->date), \PhpXmlRpc\Value::$xmlrpcDateTime)
                 ,   'terms' => new \PhpXmlRpc\Value( array(), \PhpXmlRpc\Value::$xmlrpcArray)
                 ,   'custom_fields' => new \PhpXmlRpc\Value( array(), \PhpXmlRpc\Value::$xmlrpcArray)
             );
