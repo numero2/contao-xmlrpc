@@ -396,7 +396,6 @@ class Procedures extends \System {
 
         XMLRPC::authenticateUser($params->getParam(0)[1]->me['string'], $params->getParam(0)[2]->me['string']);
 
-        $blogID = $params->getParam(0)[0]->me['i4'];
         $post = $params->getParam(0)[3]->me['struct'];
         $postID = $post['post_id']->me['string'];
 
@@ -406,9 +405,15 @@ class Procedures extends \System {
 
         if( !empty($fileContent) ) {
 
-            $fileName = \StringUtil::sanitizeFileName( time().'-'.$fileName );
-            $filePath = "files/";
+            // check filesize
+            if( strlen($fileContent) > \Config::get('maxFileSize') ) {
+                return new \PhpXmlRpc\Response(NULL, 100, "File could not be saved, maximum file size is ".\Config::get('maxFileSize')." bytes.");
+            }
 
+            $fileName = \StringUtil::sanitizeFileName( time().'-'.$fileName );
+            $filePath = \Config::get('xmlrpc_filepath') ? \FilesModel::findByUUID( \Config::get('xmlrpc_filepath') )->path.'/' : "files/";
+
+            // save file to specified folder
             $oFile = NULL;
             $oFile = new \File( $filePath.$fileName );
 
@@ -416,31 +421,62 @@ class Procedures extends \System {
 
                 $oFile->close();
 
-                $res = array(
-                    'attachment_id' => new \PhpXmlRpc\Value( "8", "string" )
-                ,   'date_created_gmt' => new \PhpXmlRpc\Value( date("Ymd\Th:m:s",time()), "dateTime.iso8601" )
-                ,   'parent' => new \PhpXmlRpc\Value( "1", "string" )
-                ,   'link' => new \PhpXmlRpc\Value( \Environment::get('base').$filePath.$fileName, "string" )
-                ,   'title' => new \PhpXmlRpc\Value( $fileName, "string" )
-                ,   'caption' => new \PhpXmlRpc\Value( "", "string" )
-                ,   'description' => new \PhpXmlRpc\Value( "", "string" )
-                ,   'type' => new \PhpXmlRpc\Value( $fileType, "string" )
-                ,   'id' => new \PhpXmlRpc\Value( "8", "string" )
-                ,   'file' => new \PhpXmlRpc\Value( $fileName, "string" )
-                ,   'url' => new \PhpXmlRpc\Value( \Environment::get('base').$filePath.$fileName, "string" )
+                $oModel = NULL;
+                $oModel = $oFile->getModel();
+
+                // generate metadata
+                $meta = array(
+                    'file' => new \PhpXmlRpc\Value( $oFile->path, "string" )
                 );
 
-                return new \PhpXmlRpc\Response(new \PhpXmlRpc\Value($res, "struct"));
+                // add dimensions (images only)
+                if( $oFile->isImage ) {
+
+                    $meta['width'] = new \PhpXmlRpc\Value( $oFile->imageSize[0], "int" );
+                    $meta['height'] = new \PhpXmlRpc\Value( $oFile->imageSize[1], "int" );
+
+                    // check for image resolution restrictions
+                    if( $meta['width'] > \Config::get('gdMaxImgWidth') || $meta['height'] > \Config::get('gdMaxImgHeight') ) {
+                        return new \PhpXmlRpc\Response(NULL, 100, "Maximum allowed image resolution is ".\Config::get('gdMaxImgWidth')."x".\Config::get('gdMaxImgHeight').".");
+                    }
+                }
+
+                $result = array(
+                    'attachment_id' => new \PhpXmlRpc\Value( $oModel->id, "string" )
+                ,   'date_created_gmt' => new \PhpXmlRpc\Value( date("Ymd\Th:m:s",$oModel->tstamp), "dateTime.iso8601" )
+                ,   'parent' => new \PhpXmlRpc\Value( $oModel->pid, "string" )
+                ,   'link' => new \PhpXmlRpc\Value( \Environment::get('base').$oFile->path, "string" )
+                ,   'title' => new \PhpXmlRpc\Value( $oFile->name, "string" )
+                ,   'caption' => new \PhpXmlRpc\Value( "", "string" )
+                ,   'description' => new \PhpXmlRpc\Value( "", "string" )
+                ,   'metadata' => new \PhpXmlRpc\Value( $meta, "struct" )
+                ,   'type' => new \PhpXmlRpc\Value( $oFile->mime, "string" )
+                ,   'id' => new \PhpXmlRpc\Value( $oModel->id, "string" )
+                ,   'file' => new \PhpXmlRpc\Value( $oFile->name, "string" )
+                ,   'url' => new \PhpXmlRpc\Value( \Environment::get('base').$oFile->path, "string" )
+                );
+
+                // update blog post and add image
+                if( $postID && $oFile->isImage ) {
+
+                    $oPost = NULL;
+                    $oPost = \NewsModel::findById( $postID );
+
+                    $oPost->addImage = 1;
+                    $oPost->singleSRC = $oModel->uuid;
+                    $oPost->save();
+                }
+
+                return new \PhpXmlRpc\Response(new \PhpXmlRpc\Value($result, "struct"));
+
+            } else {
+
+                return new \PhpXmlRpc\Response(NULL, 100, "File could not be saved.");
             }
 
-            echo var_dump($b)."\n";
+        } else {
 
-            echo $filePath."\n";
-            echo $fileName."\n";
-            echo $fileType."\n";
-            die("here");
+            return new \PhpXmlRpc\Response(NULL, 100, "Missing file, must be BASE64 encoded.");
         }
-
-        die();
     }
 }

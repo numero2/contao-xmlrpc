@@ -105,7 +105,7 @@ class XMLRPC extends \System {
 
         if( $username != NULL && $password != NULL ){
 
-            if( $username === \Config::get(xmlrpc_username) && $password === \Config::get(xmlrpc_password) ) {
+            if( $username === \Config::get('xmlrpc_username') && $password === \Config::get('xmlrpc_password') ) {
                 return true;
             }
         }
