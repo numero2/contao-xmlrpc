@@ -54,6 +54,11 @@ class Procedures extends \System {
             ,   "signature" => array(array("string", "array"))
             ,   "docstring" => "Used to create a new post."
             )
+        ,   "cto.uploadFile" => array(
+                "function" => "Procedures::uploadFile"
+            ,   "signature" => array(array("string", "array"))
+            ,   "docstring" => "Uploads an image for the given post."
+            )
         );
     }
 
@@ -219,6 +224,9 @@ class Procedures extends \System {
                 $url = \Environment::get('base').\Controller::generateFrontendUrl( $page->row(), "/".$posts->alias );
             }
 
+            $headline = $posts->headline;
+            $content = $posts->text;
+
             $entry = array(
                     'post_id' => new \PhpXmlRpc\Value( $posts->id, "string")
                 ,   'post_title' => new \PhpXmlRpc\Value( $posts->headline, "string")
@@ -228,11 +236,11 @@ class Procedures extends \System {
                 ,   'post_modified_gmt' => new \PhpXmlRpc\Value( date("Ymd\Th:m:s",$posts->tstamp), "dateTime.iso8601") //////////////
                 ,   'post_status' => new \PhpXmlRpc\Value( $posts->published?"published":'draft', "string")
                 ,   'post_type' => new \PhpXmlRpc\Value( "post", "string")
-                ,   'post_name' => new \PhpXmlRpc\Value( $posts->headline, "string")
+                ,   'post_name' => new \PhpXmlRpc\Value( $headline, "string")
                 ,   'post_author' => new \PhpXmlRpc\Value( "", "string") ///////////////
                 ,   'post_password' => new \PhpXmlRpc\Value( "", "string") ///////////////
                 ,   'post_excerpt' => new \PhpXmlRpc\Value( "", "string") ///////////////
-                ,   'post_content' => new \PhpXmlRpc\Value( htmlentities($posts->text), "string")
+                ,   'post_content' => new \PhpXmlRpc\Value( $content, "string")
                 ,   'post_parent' => new \PhpXmlRpc\Value( $blogID, "string")
                 ,   'post_mime_type' => new \PhpXmlRpc\Value( "", "string")
                 ,   'link' => new \PhpXmlRpc\Value( $url, "string")
@@ -243,7 +251,20 @@ class Procedures extends \System {
                 ,   'sticky' => new \PhpXmlRpc\Value( $posts->featured, "boolean")
                 ,   'post_thumbnail' => new \PhpXmlRpc\Value( "", "string") //////////////////
                 ,   'post_format' => new \PhpXmlRpc\Value( "standard", "string")
-                ,   'terms' => new \PhpXmlRpc\Value( array(), "array")
+                ,   'terms' => new \PhpXmlRpc\Value( array(
+                        new \PhpXmlRpc\Value(array(
+                            "term_id" => new \PhpXmlRpc\Value( "1", "string")
+                        ,   "name" => new \PhpXmlRpc\Value( "Allgemein", "string")
+                        ,   "slug" => new \PhpXmlRpc\Value( "allgemein", "string")
+                        ,   "term_group" => new \PhpXmlRpc\Value( "0", "string")
+                        ,   "term_taxonomy_id" => new \PhpXmlRpc\Value( "1", "string")
+                        ,   "taxonomy" => new \PhpXmlRpc\Value( "category", "string")
+                        ,   "description" => new \PhpXmlRpc\Value( "", "string")
+                        ,   "parent" => new \PhpXmlRpc\Value( "0", "string")
+                        ,   "count" => new \PhpXmlRpc\Value( "1", "string")
+                        ,   "filter" => new \PhpXmlRpc\Value( "raw", "string")
+                        ), "struct")
+                    ), "array")
                 ,   'custom_fields' => new \PhpXmlRpc\Value( array(), "array")
                 //,   'blog_id' => new \PhpXmlRpc\Value( $blogID, "string")
             );
@@ -362,5 +383,63 @@ class Procedures extends \System {
         $content->save();
 
         return new \PhpXmlRpc\Response(new \PhpXmlRpc\Value($news->id, "string"));
+    }
+
+
+    /**
+     * Uploads an image for the given post.
+     *
+     * @param array $params
+     */
+    static public function uploadFile($params) {
+
+        XMLRPC::authenticateUser($params->getParam(0)[1]->me['string'], $params->getParam(0)[2]->me['string']);
+
+        $blogID = $params->getParam(0)[0]->me['i4'];
+        $post = $params->getParam(0)[3]->me['struct'];
+        $postID = $post['post_id']->me['string'];
+
+        $fileName = $post['name']->me['string'];
+        $fileType = $post['type']->me['string'];
+        $fileContent = $post['bits']->me['base64'];
+
+        if( !empty($fileContent) ) {
+
+            $fileName = \StringUtil::sanitizeFileName( time().'-'.$fileName );
+            $filePath = "files/";
+
+            $oFile = NULL;
+            $oFile = new \File( $filePath.$fileName );
+
+            if( $oFile->write( $fileContent ) ) {
+
+                $oFile->close();
+
+                $res = array(
+                    'attachment_id' => new \PhpXmlRpc\Value( "8", "string" )
+                ,   'date_created_gmt' => new \PhpXmlRpc\Value( date("Ymd\Th:m:s",time()), "dateTime.iso8601" )
+                ,   'parent' => new \PhpXmlRpc\Value( "1", "string" )
+                ,   'link' => new \PhpXmlRpc\Value( \Environment::get('base').$filePath.$fileName, "string" )
+                ,   'title' => new \PhpXmlRpc\Value( $fileName, "string" )
+                ,   'caption' => new \PhpXmlRpc\Value( "", "string" )
+                ,   'description' => new \PhpXmlRpc\Value( "", "string" )
+                ,   'type' => new \PhpXmlRpc\Value( $fileType, "string" )
+                ,   'id' => new \PhpXmlRpc\Value( "8", "string" )
+                ,   'file' => new \PhpXmlRpc\Value( $fileName, "string" )
+                ,   'url' => new \PhpXmlRpc\Value( \Environment::get('base').$filePath.$fileName, "string" )
+                );
+
+                return new \PhpXmlRpc\Response(new \PhpXmlRpc\Value($res, "struct"));
+            }
+
+            echo var_dump($b)."\n";
+
+            echo $filePath."\n";
+            echo $fileName."\n";
+            echo $fileType."\n";
+            die("here");
+        }
+
+        die();
     }
 }
