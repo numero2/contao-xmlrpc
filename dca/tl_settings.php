@@ -45,7 +45,7 @@ $GLOBALS['TL_DCA']['tl_settings']['fields']['xmlrpc_author'] = array(
 $GLOBALS['TL_DCA']['tl_settings']['fields']['xmlrpc_filepath'] = array(
     'label'       => &$GLOBALS['TL_LANG']['tl_settings']['xmlrpc_filepath']
 ,   'inputType'   => 'fileTree'
-,   'eval'        => array('mandatory'=>false, 'fieldType'=>'radio', 'foldersOnly'=>true)
+,   'eval'        => array('mandatory'=>false, 'fieldType'=>'radio', 'foldersOnly'=>true, 'tl_class'=>'w50')
 ,   'sql'         => "binary(16) NULL"
 );
 
