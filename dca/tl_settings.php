@@ -16,7 +16,7 @@
 /* PALETTES */
 $GLOBALS['TL_DCA']['tl_settings']['palettes']['default'] = str_replace(
     ';{modules_legend'
-,   ';{xmlrpc_legend:hide},xmlrpc_username,xmlrpc_password;{modules_legend'
+,   ';{xmlrpc_legend:hide},xmlrpc_username,xmlrpc_password,xmlrpc_author,xmlrpc_filepath;{modules_legend'
 ,   $GLOBALS['TL_DCA']['tl_settings']['palettes']['default']
 );
 
@@ -34,6 +34,21 @@ $GLOBALS['TL_DCA']['tl_settings']['fields']['xmlrpc_password'] = array(
 ,   'eval'        => array('mandatory'=>false, 'tl_class'=>'w50', 'readonly'=> false)
 ,   'load_callback' => array(array('tl_xmlrpc_settings','loadRandomWhenEmpty'))
 );
+$GLOBALS['TL_DCA']['tl_settings']['fields']['xmlrpc_author'] = array(
+    'label'       => &$GLOBALS['TL_LANG']['tl_settings']['xmlrpc_author']
+,   'inputType'   => 'select'
+,   'flag'        => 11
+,   'foreignKey'  => 'tl_user.name'
+,   'eval'        => array('mandatory'=>false, 'tl_class'=>'w50', 'chosen'=>true, 'includeBlankOption' => true)
+,   'sql'         => "int(10) unsigned NOT NULL default '0'",
+);
+$GLOBALS['TL_DCA']['tl_settings']['fields']['xmlrpc_filepath'] = array(
+    'label'       => &$GLOBALS['TL_LANG']['tl_settings']['xmlrpc_filepath']
+,   'inputType'   => 'fileTree'
+,   'eval'        => array('mandatory'=>false, 'fieldType'=>'radio', 'foldersOnly'=>true)
+,   'sql'         => "binary(16) NULL"
+);
+
 
 
 class tl_xmlrpc_settings extends \Backend {

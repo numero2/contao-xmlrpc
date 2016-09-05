@@ -21,6 +21,22 @@
         <source>Password used for authenticate a request</source>
         <target>Passwort zur Authentifizierung einer Anfrage</target>
     </trans-unit>
+    <trans-unit id="tl_settings.xmlrpc_author.0">
+        <source>News author</source>
+        <target>Nachrichten Autor</target>
+    </trans-unit>
+    <trans-unit id="tl_settings.xmlrpc_author.1">
+        <source>News added by XML-RPC are written by this user</source>
+        <target>Nachrichten hinzugefügt durch XML-RPC werden von diesem Nutzer geschrieben</target>
+    </trans-unit>
+    <trans-unit id="tl_settings.xmlrpc_filepath.0">
+        <source>Files path</source>
+        <target>Datei Ordner</target>
+    </trans-unit>
+    <trans-unit id="tl_settings.xmlrpc_filepath.1">
+        <source>Files added by XML-RPC are stored under this folder</source>
+        <target>Dateien hinzugefügt durch XML-RPC werden in diesem Ordner gespeichert</target>
+    </trans-unit>
 </body>
 </file>
 </xliff>
