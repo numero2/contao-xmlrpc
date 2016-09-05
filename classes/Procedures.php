@@ -199,6 +199,7 @@ class Procedures extends \System {
                 n.stop,
                 n.featured,
                 n.tstamp,
+                n.noComments,
                 na.jumpTo,
                 c.text
             FROM tl_news AS n
@@ -211,6 +212,7 @@ class Procedures extends \System {
             // echo "<pre>".print_r($search['post_type']->me['string'],1)."</pre>\n";
             // echo "<pre>".print_r($search['orderby']->me['string'],1)."</pre>\n";
             // echo "<pre>".print_r($search['order']->me['string'],1)."</pre>\n";
+            // die();
 
         $res = array();
         if( $posts )
@@ -231,25 +233,25 @@ class Procedures extends \System {
                     'post_id' => new \PhpXmlRpc\Value( $posts->id, "string")
                 ,   'post_title' => new \PhpXmlRpc\Value( $posts->headline, "string")
                 ,   'post_date' => new \PhpXmlRpc\Value( date("Ymd\Th:m:s",$posts->date), "dateTime.iso8601")
-                ,   'post_date_gmt' => new \PhpXmlRpc\Value( date("Ymd\Th:m:s",$posts->date), "dateTime.iso8601") //////////////
+                ,   'post_date_gmt' => new \PhpXmlRpc\Value( gmdate("Ymd\Th:m:s",$posts->date), "dateTime.iso8601")
                 ,   'post_modified' => new \PhpXmlRpc\Value( date("Ymd\Th:m:s",$posts->tstamp), "dateTime.iso8601")
-                ,   'post_modified_gmt' => new \PhpXmlRpc\Value( date("Ymd\Th:m:s",$posts->tstamp), "dateTime.iso8601") //////////////
+                ,   'post_modified_gmt' => new \PhpXmlRpc\Value( gmdate("Ymd\Th:m:s",$posts->tstamp), "dateTime.iso8601")
                 ,   'post_status' => new \PhpXmlRpc\Value( $posts->published?"published":'draft', "string")
                 ,   'post_type' => new \PhpXmlRpc\Value( "post", "string")
                 ,   'post_name' => new \PhpXmlRpc\Value( $headline, "string")
-                ,   'post_author' => new \PhpXmlRpc\Value( "", "string") ///////////////
-                ,   'post_password' => new \PhpXmlRpc\Value( "", "string") ///////////////
+                ,   'post_author' => new \PhpXmlRpc\Value( $posts->author, "string")
+                ,   'post_password' => new \PhpXmlRpc\Value( "", "string")
                 ,   'post_excerpt' => new \PhpXmlRpc\Value( "", "string") ///////////////
                 ,   'post_content' => new \PhpXmlRpc\Value( $content, "string")
                 ,   'post_parent' => new \PhpXmlRpc\Value( $blogID, "string")
                 ,   'post_mime_type' => new \PhpXmlRpc\Value( "", "string")
                 ,   'link' => new \PhpXmlRpc\Value( $url, "string")
-                ,   'guid' => new \PhpXmlRpc\Value( $url, "string") //////////////////
+                ,   'guid' => new \PhpXmlRpc\Value( $posts->id, "string") // globally unique identifier
                 ,   'menu_order' => new \PhpXmlRpc\Value( "0", "int")
-                ,   'comment_status' => new \PhpXmlRpc\Value( "open", "string") //////////////////
-                ,   'ping_status' => new \PhpXmlRpc\Value( "open", "string") //////////////////
+                ,   'comment_status' => new \PhpXmlRpc\Value( $posts->noComments==''?"open":'closed', "string")
+                ,   'ping_status' => new \PhpXmlRpc\Value( "closed", "string")
                 ,   'sticky' => new \PhpXmlRpc\Value( $posts->featured, "boolean")
-                ,   'post_thumbnail' => new \PhpXmlRpc\Value( "", "string") //////////////////
+                ,   'post_thumbnail' => new \PhpXmlRpc\Value( "", "string") // in wordpress only available if theme supports this
                 ,   'post_format' => new \PhpXmlRpc\Value( "standard", "string")
                 ,   'terms' => new \PhpXmlRpc\Value( array(
                         new \PhpXmlRpc\Value(array(
@@ -266,7 +268,6 @@ class Procedures extends \System {
                         ), "struct")
                     ), "array")
                 ,   'custom_fields' => new \PhpXmlRpc\Value( array(), "array")
-                //,   'blog_id' => new \PhpXmlRpc\Value( $blogID, "string")
             );
             $res[] = new \PhpXmlRpc\Value($entry, "struct");
             if( $posts->count() == 1 ){
