@@ -25,7 +25,7 @@ class XMLRPC extends \System {
 	 * Log file name
 	 * @var string
 	 */
-    protected $strLogFile = 'xmlrpc.log';
+    protected static $strLogFile = 'xmlrpc.log';
 
 
     /**
@@ -79,17 +79,17 @@ class XMLRPC extends \System {
      *
      * @return bool
      */
-    private function logRequest( $message=NULL ) {
+    public static function logRequest( $message=NULL ) {
 
         if( empty($message) )
             return false;
 
-        $clientID = NULL;
-        $clientID = \Environment::get('ip');
+        $clientIP = NULL;
+        $clientIP = \Environment::get('ip');
 
-        $msg = sprintf("[%s] %s",$clientID,$message);
+        $msg = sprintf("[%s] %s",$clientIP,$message);
 
-        log_message($msg, $this->strLogFile);
+        log_message($msg, self::$strLogFile);
     }
 
 

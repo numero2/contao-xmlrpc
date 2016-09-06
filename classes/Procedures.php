@@ -407,7 +407,18 @@ class Procedures extends \System {
 
             // check filesize
             if( strlen($fileContent) > \Config::get('maxFileSize') ) {
-                return new \PhpXmlRpc\Response(NULL, 100, "File could not be saved, maximum file size is ".\Config::get('maxFileSize')." bytes.");
+                $errMsg = "File ".$fileName." exceeds the maximum file size of ".\Config::get('maxFileSize')." bytes.";
+                XMLRPC::logRequest($errMsg);
+                return new \PhpXmlRpc\Response(NULL, 100, $errMsg);
+            }
+
+            $strExtension = strtolower(substr($fileName, strrpos($fileName, '.') + 1));
+
+            // file type not allowed
+            if( !in_array($strExtension, trimsplit(',', strtolower(\Config::get('uploadTypes')))) ) {
+                $errMsg = "File type ".$strExtension." is not allowed to be uploaded.";
+                XMLRPC::logRequest($errMsg);
+                return new \PhpXmlRpc\Response(NULL, 100, $errMsg);
             }
 
             $fileName = \StringUtil::sanitizeFileName( time().'-'.$fileName );
@@ -437,14 +448,17 @@ class Procedures extends \System {
 
                     // check for image resolution restrictions
                     if( $meta['width'] > \Config::get('gdMaxImgWidth') || $meta['height'] > \Config::get('gdMaxImgHeight') ) {
-                        return new \PhpXmlRpc\Response(NULL, 100, "Maximum allowed image resolution is ".\Config::get('gdMaxImgWidth')."x".\Config::get('gdMaxImgHeight').".");
+
+                        $errMsg = "Maximum allowed image resolution is ".\Config::get('gdMaxImgWidth')."x".\Config::get('gdMaxImgHeight').".";
+                        XMLRPC::logRequest($errMsg);
+                        return new \PhpXmlRpc\Response(NULL, 100, $errMsg);
                     }
                 }
 
                 $result = array(
                     'attachment_id' => new \PhpXmlRpc\Value( $oModel->id, "string" )
                 ,   'date_created_gmt' => new \PhpXmlRpc\Value( date("Ymd\Th:m:s",$oModel->tstamp), "dateTime.iso8601" )
-                ,   'parent' => new \PhpXmlRpc\Value( $oModel->pid, "string" )
+                ,   'parent' => new \PhpXmlRpc\Value( \FilesModel::findByUUID($oModel->pid)->id, "string" )
                 ,   'link' => new \PhpXmlRpc\Value( \Environment::get('base').$oFile->path, "string" )
                 ,   'title' => new \PhpXmlRpc\Value( $oFile->name, "string" )
                 ,   'caption' => new \PhpXmlRpc\Value( "", "string" )
@@ -462,9 +476,11 @@ class Procedures extends \System {
                     $oPost = NULL;
                     $oPost = \NewsModel::findById( $postID );
 
-                    $oPost->addImage = 1;
-                    $oPost->singleSRC = $oModel->uuid;
-                    $oPost->save();
+                    if( $oPost ) {
+                        $oPost->addImage = 1;
+                        $oPost->singleSRC = $oModel->uuid;
+                        $oPost->save();
+                    }
                 }
 
                 return new \PhpXmlRpc\Response(new \PhpXmlRpc\Value($result, "struct"));
