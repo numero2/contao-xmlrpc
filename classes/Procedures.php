@@ -346,7 +346,20 @@ class Procedures extends \System {
 
         $blogID = $params->getParam(0)[0]->me['i4'];
 
+        $mBlog = \NewsArchiveModel::findById($blogID);
+        if( !$mBlog || count($mBlog)==0 ){
+
+            return new \PhpXmlRpc\Response(NULL, 100, "Missing blogID or blogID not found.");
+        }
+
+
         $post = $params->getParam(0)[3]->me['struct'];
+
+        if( empty($post['post_title']->me['string']) && empty($post['post_date']->me['dateTime.iso8601']) && empty($post['post_content']->me['string']) ){
+
+            return new \PhpXmlRpc\Response(NULL, 100, "Missing data, must send post_title, post_date and post_content.");
+        }
+
 
         $news = new \NewsModel();
         $news->pid = $blogID;
