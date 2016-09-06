@@ -124,7 +124,7 @@ class Procedures extends \System {
 
 
     /**
-     * Queries which blogs can be reached over this integration.
+     * Queries which blogs/news archives can be reached over this integration.
      *
      * @param array $params
      */
@@ -185,6 +185,16 @@ class Procedures extends \System {
 
         $offset = $search['offset']->me['i4'];
         $rows = $search['number']->me['i4'];
+        // echo "<pre>".print_r($search['post_type']->me['string'],1)."</pre>\n";
+        $orderby = $search['orderby']->me['string'];
+        $order = $search['order']->me['string'];
+        $orderSQL = "n.date DESC";      // Default ORDER BY Query
+
+        // changing ORDER BY Query based on request
+        if( $orderby == "post_date" && $order == "desc" ){
+            $orderSQL = "n.date DESC";
+        }
+
         $posts = \Database::getInstance()->prepare(
             "SELECT
                 n.id,
@@ -206,13 +216,8 @@ class Procedures extends \System {
             JOIN tl_content AS c ON (c.pid= n.id)
             JOIN tl_news_archive AS na ON (na.id = n.pid)
             WHERE n.pid= ? AND c.ptable = 'tl_news'
-            ORDER BY n.date DESC
-            "
+            ORDER BY ". $orderSQL
             )->limit($rows, $offset)->execute($blogID);
-            // echo "<pre>".print_r($search['post_type']->me['string'],1)."</pre>\n";
-            // echo "<pre>".print_r($search['orderby']->me['string'],1)."</pre>\n";
-            // echo "<pre>".print_r($search['order']->me['string'],1)."</pre>\n";
-            // die();
 
         $res = array();
         if( $posts )
@@ -222,7 +227,7 @@ class Procedures extends \System {
 
             $url = "";
             if( !empty($page->id) ){
-                // TODO find better qay to get the right url
+                // TODO find better way to get the right url
                 $url = \Environment::get('base').\Controller::generateFrontendUrl( $page->row(), "/".$posts->alias );
             }
 
@@ -359,8 +364,8 @@ class Procedures extends \System {
 		}
 
         $news->alias = $alias;
-        // TODO find a suitable userID
-        $news->author = '1';
+
+        $news->author = \Config::get('xmlrpc_author');
         $news->date = strtotime($post['post_date']->me['dateTime.iso8601']);
         $news->time = strtotime($post['post_date']->me['dateTime.iso8601']);
         $news->source = "default";
