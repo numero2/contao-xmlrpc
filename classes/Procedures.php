@@ -382,11 +382,12 @@ class Procedures extends \System {
         $news->date = strtotime($post['post_date']->me['dateTime.iso8601']);
         $news->time = strtotime($post['post_date']->me['dateTime.iso8601']);
         $news->source = "default";
-        // TODO determine different post_status, so far recieved: "draft"
-        // TODO use post_status
-        // $news->published = ?'1':'';
-        // $news->start = strtotime($post['post_status']->me['dateTime.iso8601']);
-        // $news->start = strtotime($post['post_date']->me['dateTime.iso8601']);
+
+        if( !empty($post['post_date']->me['dateTime.iso8601']) ){
+
+            $news->published = '1';
+            $news->start = strtotime($post['post_date']->me['dateTime.iso8601']);
+        }
 
         $news->save();
 
