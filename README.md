@@ -13,3 +13,10 @@ To prevent caching of responses add the following snippet inside your `<IfModule
     Expires "access"
 </FilesMatch>
 ```
+Because tools like Scompler might like to link directly into the wordpress backend
+we need an extra rewrite to handle those to correctly redirect to Contao.
+```
+RewriteCond %{REQUEST_URI} wp-admin/post\.php [NC]
+RewriteCond %{QUERY_STRING} ^action=edit&post=(.*)
+RewriteRule (.*) contao/main\.php?do=news&table=tl_content&id=%1 [R=301,L]
+```
