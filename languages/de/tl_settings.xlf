@@ -43,7 +43,7 @@
     </trans-unit>
     <trans-unit id="tl_settings.xmlrpc_http_auth.1">
         <source>Requests must pass a basic HTTP authentfication</source>
-        <target>Anfragen werden durch HTTP-Authentifizierung geschützt</target>
+        <target>Anfragen werden durch basic HTTP-Authentifizierung geschützt</target>
     </trans-unit>
 </body>
 </file>
