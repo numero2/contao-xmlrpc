@@ -103,11 +103,26 @@ class XMLRPC extends \System {
      */
     static public function authenticateUser($username=NULL, $password=NULL) {
 
-        if( $username != NULL && $password != NULL ){
+        if( $username != NULL && $password != NULL ) {
 
-            if( $username === \Config::get('xmlrpc_username') && $password === \Config::get('xmlrpc_password') ) {
-                return true;
+            $bValidAuth = true;
+
+            // Basic HTTP authentication
+            if( !($_SERVER['PHP_AUTH_USER'] === \Config::get('xmlrpc_username') && $_SERVER['PHP_AUTH_PW'] === \Config::get('xmlrpc_password')) ) {
+                header('WWW-Authenticate: Basic realm="Contao XML-RPC"');
+                $bValidAuth = false;
             }
+
+            // Normal API authentication
+            if( $bValidAuth ) {
+
+                if( !($username === \Config::get('xmlrpc_username') && $password === \Config::get('xmlrpc_password')) ) {
+                    $bValidAuth = false;
+                }
+            }
+
+            if( $bValidAuth )
+                return true;
         }
 
         header('HTTP/1.0 401 Unauthorized');
