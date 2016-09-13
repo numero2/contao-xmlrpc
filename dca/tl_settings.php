@@ -16,38 +16,45 @@
 /* PALETTES */
 $GLOBALS['TL_DCA']['tl_settings']['palettes']['default'] = str_replace(
     ';{modules_legend'
-,   ';{xmlrpc_legend:hide},xmlrpc_username,xmlrpc_password,xmlrpc_author,xmlrpc_filepath;{modules_legend'
+,   ';{xmlrpc_legend:hide},xmlrpc_username,xmlrpc_password,xmlrpc_http_auth,xmlrpc_author,xmlrpc_filepath;{modules_legend'
 ,   $GLOBALS['TL_DCA']['tl_settings']['palettes']['default']
 );
 
 
 /* FIELDS */
 $GLOBALS['TL_DCA']['tl_settings']['fields']['xmlrpc_username'] = array(
-    'label'       => &$GLOBALS['TL_LANG']['tl_settings']['xmlrpc_username']
-,   'inputType'   => 'text'
-,   'eval'        => array('mandatory'=>false, 'tl_class'=>'w50', 'readonly'=> false)
-,   'load_callback' => array(array('tl_xmlrpc_settings','loadRandomWhenEmpty'))
+    'label'             => &$GLOBALS['TL_LANG']['tl_settings']['xmlrpc_username']
+,   'inputType'         => 'text'
+,   'eval'              => array('mandatory'=>false, 'tl_class'=>'w50', 'readonly'=> false)
+,   'load_callback'     => array(array('tl_xmlrpc_settings','loadRandomWhenEmpty'))
 );
 $GLOBALS['TL_DCA']['tl_settings']['fields']['xmlrpc_password'] = array(
-    'label'       => &$GLOBALS['TL_LANG']['tl_settings']['xmlrpc_password']
-,   'inputType'   => 'text'
-,   'eval'        => array('mandatory'=>false, 'tl_class'=>'w50', 'readonly'=> false)
-,   'load_callback' => array(array('tl_xmlrpc_settings','loadRandomWhenEmpty'))
+    'label'             => &$GLOBALS['TL_LANG']['tl_settings']['xmlrpc_password']
+,   'inputType'         => 'text'
+,   'eval'              => array('mandatory'=>false, 'tl_class'=>'w50', 'readonly'=> false)
+,   'load_callback'     => array(array('tl_xmlrpc_settings','loadRandomWhenEmpty'))
+);
+$GLOBALS['TL_DCA']['tl_settings']['fields']['xmlrpc_http_auth'] = array(
+    'label'             => &$GLOBALS['TL_LANG']['tl_settings']['xmlrpc_http_auth']
+,   'inputType'         => 'checkbox'
+,   'eval'              => array('tl_class'=>'w50')
+,   'sql'               => "char(1) NOT NULL default ''"
 );
 $GLOBALS['TL_DCA']['tl_settings']['fields']['xmlrpc_author'] = array(
-    'label'       => &$GLOBALS['TL_LANG']['tl_settings']['xmlrpc_author']
-,   'inputType'   => 'select'
-,   'flag'        => 11
-,   'foreignKey'  => 'tl_user.name'
-,   'eval'        => array('mandatory'=>false, 'tl_class'=>'w50', 'chosen'=>true, 'includeBlankOption' => true)
-,   'sql'         => "int(10) unsigned NOT NULL default '0'",
+    'label'             => &$GLOBALS['TL_LANG']['tl_settings']['xmlrpc_author']
+,   'inputType'         => 'select'
+,   'flag'              => 11
+,   'foreignKey'        => 'tl_user.name'
+,   'eval'              => array('mandatory'=>false, 'tl_class'=>'w50 clr', 'chosen'=>true, 'includeBlankOption' => true)
+,   'sql'               => "int(10) unsigned NOT NULL default '0'",
 );
 $GLOBALS['TL_DCA']['tl_settings']['fields']['xmlrpc_filepath'] = array(
-    'label'       => &$GLOBALS['TL_LANG']['tl_settings']['xmlrpc_filepath']
-,   'inputType'   => 'fileTree'
-,   'eval'        => array('mandatory'=>false, 'fieldType'=>'radio', 'foldersOnly'=>true, 'tl_class'=>'w50')
-,   'sql'         => "binary(16) NULL"
+    'label'             => &$GLOBALS['TL_LANG']['tl_settings']['xmlrpc_filepath']
+,   'inputType'         => 'fileTree'
+,   'eval'              => array('mandatory'=>false, 'fieldType'=>'radio', 'foldersOnly'=>true, 'tl_class'=>'w50')
+,   'sql'               => "binary(16) NULL"
 );
+
 
 
 
