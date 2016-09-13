@@ -109,6 +109,7 @@ class XMLRPC extends \System {
 
             // Basic HTTP authentication
             if( \Config::get('xmlrpc_http_auth') ) {
+
                 if( !($_SERVER['PHP_AUTH_USER'] === \Config::get('xmlrpc_username') && $_SERVER['PHP_AUTH_PW'] === \Config::get('xmlrpc_password')) ) {
                     header('WWW-Authenticate: Basic realm="Contao XML-RPC"');
                     $bValidAuth = false;

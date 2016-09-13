@@ -42,8 +42,8 @@
         <target>Aktiviere HTTP-Authentifizierung</target>
     </trans-unit>
     <trans-unit id="tl_settings.xmlrpc_http_auth.1">
-        <source>Requests must pass a basic HTTP authentfication</source>
-        <target>Anfragen werden durch basic HTTP-Authentifizierung geschützt</target>
+        <source>Requests must pass a basic HTTP authentfication (may be incompatible with some third party tools)</source>
+        <target>Anfragen werden durch Basisauthentifizierung geschützt (Achtung, kann zu Problemen mit nicht kompatiblen Anwendungen führen!)</target>
     </trans-unit>
 </body>
 </file>
