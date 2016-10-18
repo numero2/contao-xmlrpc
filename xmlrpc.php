@@ -8,10 +8,9 @@
  * @package   Contao XML-RPC
  * @author    Benny Born <benny.born@numero2.de>
  * @author    Michael Bösherz <michael.boesherz@numero2.de>
- * @license   Commercial
+ * @license   LGPL-3.0+
  * @copyright 2016 numero2 - Agentur für Internetdienstleistungen
  */
-
 
 
 // Set the script name
