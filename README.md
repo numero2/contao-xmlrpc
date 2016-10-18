@@ -7,12 +7,14 @@ Add the following line to your `.htaccess` inside the `<IfModule mod_rewrite.c>`
 ```
 RewriteRule xmlrpc\.php system/modules/xmlrpc/xmlrpc\.php [L]
 ```
+<!--
 To prevent caching of responses add the following snippet inside your `<IfModule mod_expires.c>` block.
 ```
 <FilesMatch "xmlrpc.php">
     Expires "access"
 </FilesMatch>
 ```
+-->
 Because tools like Scompler might like to link directly into the Wordpress backend
 we need an extra rewrite to handle those to correctly redirect to Contao.
 ```

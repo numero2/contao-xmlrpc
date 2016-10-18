@@ -7,11 +7,11 @@
     </trans-unit>
     <trans-unit id="tl_settings.xmlrpc_username.0">
         <source>Username</source>
-        <target>Nutzername</target>
+        <target>Benutzername</target>
     </trans-unit>
     <trans-unit id="tl_settings.xmlrpc_username.1">
         <source>Username used for authenticate a request</source>
-        <target>Nutzername zur Authentifizierung einer Anfrage</target>
+        <target>Benutzername zur Authentifizierung einer Anfrage</target>
     </trans-unit>
     <trans-unit id="tl_settings.xmlrpc_password.0">
         <source>Password</source>
@@ -21,21 +21,29 @@
         <source>Password used for authenticate a request</source>
         <target>Passwort zur Authentifizierung einer Anfrage</target>
     </trans-unit>
+    <trans-unit id="tl_settings.xmlrpc_path.0">
+        <source>Path to xmlrpc.php</source>
+        <target>Pfad zur xmlrpc.php</target>
+    </trans-unit>
+    <trans-unit id="tl_settings.xmlrpc_path.1">
+        <source></source>
+        <target>Geben Sie diese URL an wenn Sie nach der Addresse zur xmlrpc.php gefragt werden</target>
+    </trans-unit>
     <trans-unit id="tl_settings.xmlrpc_author.0">
         <source>News author</source>
         <target>Nachrichten Autor</target>
     </trans-unit>
     <trans-unit id="tl_settings.xmlrpc_author.1">
-        <source>News added by XML-RPC are written by this user</source>
-        <target>Nachrichten hinzugefügt durch XML-RPC werden von diesem Nutzer geschrieben</target>
+        <source>News added by XML-RPC are written by this author</source>
+        <target>Über XML-RPC angelegte Nachrichten werden von diesem Autor geschrieben</target>
     </trans-unit>
     <trans-unit id="tl_settings.xmlrpc_filepath.0">
         <source>Files path</source>
-        <target>Datei Ordner</target>
+        <target>Ordner für Dateiuploads</target>
     </trans-unit>
     <trans-unit id="tl_settings.xmlrpc_filepath.1">
-        <source>Files added by XML-RPC are stored under this folder</source>
-        <target>Dateien hinzugefügt durch XML-RPC werden in diesem Ordner gespeichert</target>
+        <source>Files added by XML-RPC are all stored in this folder</source>
+        <target>Dateien die per XML-RPC hochgeladen werden landen in diesem Ordner</target>
     </trans-unit>
     <trans-unit id="tl_settings.xmlrpc_http_auth.0">
         <source>Activate HTTP authentication</source>
@@ -43,7 +51,7 @@
     </trans-unit>
     <trans-unit id="tl_settings.xmlrpc_http_auth.1">
         <source>Requests must pass a basic HTTP authentfication (may be incompatible with some third party tools)</source>
-        <target>Anfragen werden durch Basisauthentifizierung geschützt (Achtung, kann zu Problemen mit nicht kompatiblen Anwendungen führen!)</target>
+        <target>Anfragen werden durch Basisauthentifizierung geschützt (kann zu Problemen mit nicht kompatiblen Anwendungen führen!)</target>
     </trans-unit>
 </body>
 </file>

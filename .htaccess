@@ -13,4 +13,7 @@
         Order Deny,Allow
         Allow from all
     </IfModule>
+    <IfModule mod_expires.c>
+        Expires "access"
+    </IfModule>
 </FilesMatch>
