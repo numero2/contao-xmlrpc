@@ -1,0 +1,22 @@
+{
+    "name": "numero2/contao-xmlrpc",
+    "type": "contao-module",
+    "license": "LGPL-3.0+",
+    "authors": [{
+            "name": "numero2 - Agentur für digitales Marketing GbR",
+            "homepage": "http://www.numero2.de"
+        }
+    ],
+    "require": {
+        "contao/core-bundle": "4.*",
+        "contao-community-alliance/composer-plugin": "3.*",
+        "phpxmlrpc/phpxmlrpc": "~4.0"
+    },
+    "extra": {
+        "contao": {
+            "sources": {
+                "": "system/modules/xmlrpc"
+            }
+        }
+    }
+}

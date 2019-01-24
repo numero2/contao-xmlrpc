@@ -3,13 +3,13 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2019 Leo Feyer
  *
  * @package   Contao XML-RPC
  * @author    Benny Born <benny.born@numero2.de>
  * @author    Michael Bösherz <michael.boesherz@numero2.de>
  * @license   LGPL-3.0+
- * @copyright 2016 numero2 - Agentur für Internetdienstleistungen
+ * @copyright 2019 numero2 - Agentur für digitales Marketing GbR
  */
 
 
@@ -141,8 +141,8 @@ class Procedures extends \System {
             $entry = array(
                 'isAdmin' => new \PhpXmlRpc\Value(true, "boolean")
             ,   'url' => new \PhpXmlRpc\Value(\Environment::get('base'), "string")
-            ,   'blogid' => new \PhpXmlRpc\Value($archives->id, "string")
-            ,   'blogName' => new \PhpXmlRpc\Value($archives->title, "string")
+            ,   'blogid' => new \PhpXmlRpc\Value($value->id, "string")
+            ,   'blogName' => new \PhpXmlRpc\Value($value->title, "string")
             ,   'xmlrpc' => new \PhpXmlRpc\Value(\Environment::get('base').\Environment::get('request'), "string")
             );
 
@@ -165,22 +165,10 @@ class Procedures extends \System {
         $blogID = $params->getParam(0)[0]->me['i4'];
         $search = $params->getParam(0)[3]->me['struct'];
 
-        $blogs = \Database::getInstance()->prepare(
-            "SELECT id FROM tl_news_archive
-            "
-            )->execute();
+        $blogFound = \NewsArchiveModel::findOneById($blogID);
 
-        $blogIDs = $blogs->fetchAllAssoc();
-
-        $blogFound = false;
-        foreach( $blogIDs as $key => $value ){
-            if( $value['id'] == $blogID ){
-                $blogFound = true;
-                break;
-            }
-        }
         if( !$blogFound ){
-            $blogID = $blogIDs[0]['id'];
+            return new \PhpXmlRpc\Response(NULL, 100, "Blog with id ".$blogID." not found.");
         }
 
         $offset = $search['offset']->me['i4'];
@@ -228,7 +216,7 @@ class Procedures extends \System {
             $url = "";
             if( !empty($page->id) ){
                 // TODO find better way to get the right url
-                $url = \Environment::get('base').\Controller::generateFrontendUrl( $page->row(), "/".$posts->alias );
+                $url = str_replace('system/modules/xmlrpc/', '', $page->getAbsoluteUrl(\Config::get('useAutoItem') ? '/'.$posts->alias : '/items/'.$posts->alias));
             }
 
             $headline = $posts->headline;
@@ -294,7 +282,7 @@ class Procedures extends \System {
         XMLRPC::authenticateUser($params->getParam(0)[1]->me['string'], $params->getParam(0)[2]->me['string']);
 
         $blogID = $params->getParam(0)[0]->me['i4'];
-        $postID = $params->getParam(0)[3]->me['i4'];
+        $postID = $params->getParam(0)[3]->me['string'];
 
         $post = \Database::getInstance()->prepare(
             "SELECT
@@ -322,7 +310,7 @@ class Procedures extends \System {
         $url = "";
         if( !empty($page->id) ){
             // TODO find better qay to get the right url
-            $url = \Environment::get('base').\Controller::generateFrontendUrl( $page->row(), "/".$post->alias );
+            $url = str_replace('system/modules/xmlrpc/', '', $page->getAbsoluteUrl(\Config::get('useAutoItem') ? '/'.$post->alias : '/items/'.$post->alias));
         }
 
         $res = array(
@@ -372,9 +360,9 @@ class Procedures extends \System {
         $objAlias = \Database::getInstance()->prepare("SELECT id FROM tl_news WHERE alias=?")->execute($alias);
 
         // Add ID to alias
-		if( $objAlias->numRows ){
-			$alias .= '-' . time();
-		}
+        if( $objAlias->numRows ){
+            $alias .= '-' . time();
+        }
 
         $news->alias = $alias;
 
@@ -486,7 +474,7 @@ class Procedures extends \System {
                 ,   'type' => new \PhpXmlRpc\Value( $oFile->mime, "string" )
                 ,   'id' => new \PhpXmlRpc\Value( $oModel->id, "string" )
                 ,   'file' => new \PhpXmlRpc\Value( $oFile->name, "string" )
-                ,   'url' => new \PhpXmlRpc\Value( \Environment::get('base').$oFile->path, "string" )
+                ,   'url' => new \PhpXmlRpc\Value( str_replace('system/modules/xmlrpc/', '', \Environment::get('base')).$oFile->path, "string" )
                 );
 
                 // update blog post and add image

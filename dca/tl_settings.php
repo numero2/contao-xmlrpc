@@ -3,20 +3,20 @@
 /**
  * Contao Open Source CMS
  *
- * Copyright (c) 2005-2016 Leo Feyer
+ * Copyright (c) 2005-2019 Leo Feyer
  *
  * @package   Contao XML-RPC
  * @author    Benny Born <benny.born@numero2.de>
  * @author    Michael Bösherz <michael.boesherz@numero2.de>
  * @license   LGPL-3.0+
- * @copyright 2016 numero2 - Agentur für Internetdienstleistungen
+ * @copyright 2019 numero2 - Agentur für digitales Marketing GbR
  */
 
 
 /* PALETTES */
 $GLOBALS['TL_DCA']['tl_settings']['palettes']['default'] = str_replace(
-    ';{modules_legend'
-,   ';{xmlrpc_legend:hide},xmlrpc_username,xmlrpc_password,xmlrpc_path,xmlrpc_author,xmlrpc_http_auth,xmlrpc_filepath;{modules_legend'
+    ';{files_legend'
+,   ';{xmlrpc_legend:hide},xmlrpc_username,xmlrpc_password,xmlrpc_path,xmlrpc_author,xmlrpc_http_auth,xmlrpc_filepath;{files_legend'
 ,   $GLOBALS['TL_DCA']['tl_settings']['palettes']['default']
 );
 
@@ -25,21 +25,21 @@ $GLOBALS['TL_DCA']['tl_settings']['palettes']['default'] = str_replace(
 $GLOBALS['TL_DCA']['tl_settings']['fields']['xmlrpc_username'] = array(
     'label'             => &$GLOBALS['TL_LANG']['tl_settings']['xmlrpc_username']
 ,   'inputType'         => 'text'
-,   'eval'              => array('mandatory'=>false, 'tl_class'=>'w50', 'readonly'=> false)
+,   'eval'              => array('mandatory'=>false, 'tl_class'=>'w50')
 ,   'load_callback'     => array(array('tl_xmlrpc_settings','loadRandomWhenEmpty'))
 );
 
 $GLOBALS['TL_DCA']['tl_settings']['fields']['xmlrpc_password'] = array(
     'label'             => &$GLOBALS['TL_LANG']['tl_settings']['xmlrpc_password']
 ,   'inputType'         => 'text'
-,   'eval'              => array('mandatory'=>false, 'tl_class'=>'w50', 'readonly'=> false)
+,   'eval'              => array('mandatory'=>false, 'tl_class'=>'w50')
 ,   'load_callback'     => array(array('tl_xmlrpc_settings','loadRandomWhenEmpty'))
 );
 
 $GLOBALS['TL_DCA']['tl_settings']['fields']['xmlrpc_path'] = array(
     'label'             => &$GLOBALS['TL_LANG']['tl_settings']['xmlrpc_path']
 ,   'inputType'         => 'text'
-,   'eval'              => array('mandatory'=>false, 'tl_class'=>'w50')
+,   'eval'              => array('mandatory'=>false, 'readonly'=>true, 'tl_class'=>'w50')
 ,   'load_callback'     => array(array('tl_xmlrpc_settings','getModulePath'))
 );
 
