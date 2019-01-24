@@ -141,8 +141,8 @@ class Procedures extends \System {
             $entry = array(
                 'isAdmin' => new \PhpXmlRpc\Value(true, "boolean")
             ,   'url' => new \PhpXmlRpc\Value(\Environment::get('base'), "string")
-            ,   'blogid' => new \PhpXmlRpc\Value($archives->id, "string")
-            ,   'blogName' => new \PhpXmlRpc\Value($archives->title, "string")
+            ,   'blogid' => new \PhpXmlRpc\Value($value->id, "string")
+            ,   'blogName' => new \PhpXmlRpc\Value($value->title, "string")
             ,   'xmlrpc' => new \PhpXmlRpc\Value(\Environment::get('base').\Environment::get('request'), "string")
             );
 
